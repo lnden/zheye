@@ -4,6 +4,19 @@
     <reactive-bar /> 
     <life-cycle />
     <watch-bar />  
+    <p>{{error}}</p>
+    <Suspense>
+      <template #default>
+        <div>
+          <async-show />
+          <dog-show />
+        </div>
+      </template>
+       <template #fallback>
+        Suspense Loading！！！3000s show 42 and dogshwo
+      </template>
+    </Suspense>
+
     <h1 v-if="loading">Loading!....</h1>
     <!-- <img v-if="loaded" :src="result.message" > -->
     <img v-if="loaded" :src="result[0].url" >
@@ -23,6 +36,8 @@ import watchBar from './components/watch.vue'
 import useMousePosition from './hooks/useMousePosition'
 import useURLLoader from './hooks/useURLLoader'
 import modal from './components/modal.vue'
+import AsyncShow from './components/AsyncShow.vue'
+import DogShow from './components/DogShow.vue'
 
 interface DogResult {
   message: string;
@@ -36,7 +51,7 @@ interface CatResult {
   height: number
 }
 
-import { defineComponent, watch, ref } from 'vue'
+import { defineComponent, watch, ref, onErrorCaptured} from 'vue'
 
 export default  defineComponent({
   name: 'App',
@@ -45,7 +60,9 @@ export default  defineComponent({
     reactiveBar,
     lifeCycle,
     watchBar,
-    modal
+    modal,
+    AsyncShow,
+    DogShow
   },
   props: {
     msg: {
@@ -78,6 +95,11 @@ export default  defineComponent({
     const onModalClose = () => {
        modalIsOpen.value = false
     }
+    const error = ref(null)
+    onErrorCaptured((e: any) => {
+      error.value = e
+      return true
+    })
 
     return {
       x, 
@@ -87,7 +109,8 @@ export default  defineComponent({
       loaded,
       modalIsOpen,
       openModal,
-      onModalClose
+      onModalClose,
+      error
     }
   }
 });
