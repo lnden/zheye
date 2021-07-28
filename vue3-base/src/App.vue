@@ -4,6 +4,9 @@
     <reactive-bar /> 
     <life-cycle />
     <watch-bar />  
+    <h1 v-if="loading">Loading!....</h1>
+    <!-- <img v-if="loaded" :src="result.message" > -->
+    <img v-if="loaded" :src="result[0].url" >
     X: {{x}} -- Y: {{y}}
   </div>
 </template>
@@ -14,8 +17,23 @@ import reactiveBar from './components/reactive.vue'
 import lifeCycle from './components/lifeCycle.vue'
 import watchBar from './components/watch.vue'
 import useMousePosition from './hooks/useMousePosition'
+import useURLLoader from './hooks/useURLLoader'
 
-export default {
+interface DogResult {
+  message: string;
+  status: string
+}
+
+interface CatResult {
+  id: string;
+  url: string;
+  width: number;
+  height: number
+}
+
+import { defineComponent, watch } from 'vue'
+
+export default  defineComponent({
   name: 'App',
   components: {
     basic,
@@ -23,13 +41,38 @@ export default {
     lifeCycle,
     watchBar
   },
-  setup() {
+  props: {
+    msg: {
+      required: true,
+      type: String
+    }
+  },
+  setup(props,context) {
+    console.log(props.msg)
+    console.log(context)
     const { x, y } = useMousePosition()
+    // const { result, loading, loaded } = useURLLoader<DogResult>('https://dog.ceo/api/breeds/image/random')
+    // watch(result, () => {
+    //   if (result.value) {
+    //     console.log('value', result.value.message)
+    //   }
+    // })
+    const { result, loading, loaded } = useURLLoader<CatResult[]>('https://api.thecatapi.com/v1/images/search?limit=1')
+    watch(result, () => {
+      if (result.value) {
+        console.log('value', result.value[0].url)
+      }
+    })
+
     return {
-      x, y
+      x, 
+      y,
+      result, 
+      loading, 
+      loaded 
     }
   }
-};
+});
 </script>
 
 <style>
