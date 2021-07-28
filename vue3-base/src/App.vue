@@ -8,6 +8,10 @@
     <!-- <img v-if="loaded" :src="result.message" > -->
     <img v-if="loaded" :src="result[0].url" >
     X: {{x}} -- Y: {{y}}
+    <modal :isOpen="modalIsOpen" @close-modal="onModalClose"> 
+      My Modal !!!
+    </modal>
+    <button @click="openModal">Open Modal</button>
   </div>
 </template>
 
@@ -18,6 +22,7 @@ import lifeCycle from './components/lifeCycle.vue'
 import watchBar from './components/watch.vue'
 import useMousePosition from './hooks/useMousePosition'
 import useURLLoader from './hooks/useURLLoader'
+import modal from './components/modal.vue'
 
 interface DogResult {
   message: string;
@@ -31,7 +36,7 @@ interface CatResult {
   height: number
 }
 
-import { defineComponent, watch } from 'vue'
+import { defineComponent, watch, ref } from 'vue'
 
 export default  defineComponent({
   name: 'App',
@@ -39,7 +44,8 @@ export default  defineComponent({
     basic,
     reactiveBar,
     lifeCycle,
-    watchBar
+    watchBar,
+    modal
   },
   props: {
     msg: {
@@ -48,8 +54,8 @@ export default  defineComponent({
     }
   },
   setup(props,context) {
-    console.log(props.msg)
-    console.log(context)
+    // console.log(props.msg)
+    // console.log(context)
     const { x, y } = useMousePosition()
     // const { result, loading, loaded } = useURLLoader<DogResult>('https://dog.ceo/api/breeds/image/random')
     // watch(result, () => {
@@ -64,12 +70,24 @@ export default  defineComponent({
       }
     })
 
+    const modalIsOpen = ref(false)
+    const openModal = () => {
+      modalIsOpen.value = true
+    }
+
+    const onModalClose = () => {
+       modalIsOpen.value = false
+    }
+
     return {
       x, 
       y,
       result, 
       loading, 
-      loaded 
+      loaded,
+      modalIsOpen,
+      openModal,
+      onModalClose
     }
   }
 });
