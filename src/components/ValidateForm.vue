@@ -25,7 +25,8 @@ export default defineComponent({
       const result = funcArr.map(func => func()).every(result => result)
       context.emit('form-submit', result)
     }
-    const callback = (func: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const callback = (func:any) => {
       funcArr.push(func)
     }
     emitter.on('form-item-created', callback)

@@ -63,7 +63,6 @@ export const testPosts: PostProps[] = [
     id: 2,
     title: '英语语法的第一个坑if从句，你掉进去了吗？（一）',
     content: '我在学校学语法的时候，最让我头疼的就是各种语法的专有名词，状语，同位语，动名词，动词分词，这些听上去很高大上的称谓到底是什么？这篇文章会分三次推送给，先从什么是状语说起，然后再深入聊聊if的正常语态和虚拟语态句型。 英语中最早学习的复杂句型…',
-    image: 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5e912f4c7f24af242a382b8c.png?x-oss-process=image/resize,m_fill,h_110,w_200',
     createdAt: '2020-06-11 10:34:22',
     columnId: 1
   },

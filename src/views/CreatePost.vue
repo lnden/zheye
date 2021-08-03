@@ -17,7 +17,9 @@
           :rules="contentRules"
           v-model="contentVal"
           placeholder="请输入文章详情"
-          type="password"
+          type="text"
+          tag="textarea"
+          rows="10"
         ></validate-input>
       </div>
       <template #submit>
@@ -31,7 +33,8 @@
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { GlobalDataProps, PostProps } from '@/store'
+import { GlobalDataProps } from '@/store'
+import { PostProps } from '../testData'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 
