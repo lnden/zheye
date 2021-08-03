@@ -31,7 +31,7 @@ export default defineComponent({
   name: 'global-header',
   props: {
     user: {
-      type: Object as PropType<UserProps[]>,
+      type: Object as PropType<UserProps>,
       required: true
     }
   },
