@@ -9,7 +9,6 @@
         </div>
       </div>
     </section>
-    <h4>{{biggerColumnLen}} - {{biggerColumnsLen}}</h4>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
     <column-list :list="list"></column-list>
   </div>
@@ -31,12 +30,8 @@ export default defineComponent({
       store.dispatch('fetchColumns')
     })
     const list = computed(() => store.state.columns)
-    const biggerColumnLen = computed(() => store.state.columns.filter(c => c._id > '2').length)
-    const biggerColumnsLen = computed(() => store.getters.biggerColumnsLen)
     return {
-      list,
-      biggerColumnLen,
-      biggerColumnsLen
+      list
     }
   }
 })
