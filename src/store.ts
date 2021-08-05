@@ -1,6 +1,12 @@
 import { createStore, Commit } from 'vuex'
 import axios from 'axios'
 
+export interface ResponseType<T > {
+  code: number
+  msg: string
+  data: T
+}
+
 export interface UserProps {
   isLogin: boolean
   nickName?: string
@@ -9,10 +15,11 @@ export interface UserProps {
   email?: string
 }
 
-interface ImageProps {
+export interface ImageProps {
   _id?: string
   url?: string
   createdAt?: string
+  fitUrl?: string
 }
 
 export interface ColumnProps {
@@ -23,13 +30,14 @@ export interface ColumnProps {
 }
 
 export interface PostProps {
-  _id: string
+  _id?: string
   title: string
   excerpt?: string
-  content?: string
-  image?: ImageProps
+  content: string
+  image?: ImageProps | string
   column: string
-  createdAt: string
+  createdAt?: string
+  author?: string
 }
 
 export interface GlobalErrorProps {
@@ -50,12 +58,17 @@ const getAndCommit = async (url: string, mutationName:string, commit: Commit) =>
   const { data } = await axios.get(url)
   // await new Promise((resolve) => setTimeout(resolve, 3000))
   commit(mutationName, data)
+  return data
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
-  const { data } = await axios.post(url, payload)
-  commit(mutationName, data)
-  return data
+  try {
+    const { data } = await axios.post(url, payload)
+    commit(mutationName, data)
+    return data
+  } catch (error) {
+    return Promise.reject(new Error('network issue'))
+  }
 }
 
 const store = createStore<GlobalDataProps>({
@@ -105,29 +118,38 @@ const store = createStore<GlobalDataProps>({
     },
     setError (state, e: GlobalErrorProps) {
       state.error = e
+    },
+    logout (state) {
+      state.token = ''
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common.Authorization
     }
   },
   actions: {
     async fetchColumns (context) {
       const { data } = await axios.get('/columns')
       context.commit('fetchColumns', data)
+      return data
     },
     fetchColumn ({ commit }, cid) {
-      getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
+      return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
     },
-    async fetchPosts ({ commit }, cid) {
-      getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+    fetchPosts ({ commit }, cid) {
+      return getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
     },
     login ({ commit }, payload) {
       return postAndCommit('/user/login', 'login', commit, payload)
     },
     fetchCurrentUser ({ commit }) {
-      getAndCommit('/user/current', 'fetchCurrentUser', commit)
+      return getAndCommit('/user/current', 'fetchCurrentUser', commit)
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
       })
+    },
+    createPost ({ commit }, payload) {
+      return postAndCommit('/posts', 'createPost', commit, payload)
     }
   },
   getters: {
