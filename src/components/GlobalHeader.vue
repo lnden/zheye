@@ -1,6 +1,9 @@
 <template>
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
-    <router-link class="navbar-brand" to="/">者也专栏</router-link>
+    <ul  class="list-inline mb-0">
+      <router-link class="navbar-brand" to="/">者也专栏</router-link>
+      <router-link class="navbar-brand" to="/upload">上传组件</router-link>
+    </ul>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item"><router-link to="/login" class="btn btn-outline-light my-2">登录</router-link></li>
       <li class="list-inline-item"><router-link to="/register" class="btn btn-outline-light my-2">注册</router-link></li>

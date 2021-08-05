@@ -32,7 +32,7 @@ export default defineComponent({
       return props.list.map(column => {
         if (!column.avatar) {
           column.avatar = {
-            url: require('@/assets/column.webp')
+            url: require('@/assets/column.jpg')
           }
         } else {
           column.avatar.url = column.avatar.url + '?x-oss-process=image/resize,m-pad,h_50,w_50'

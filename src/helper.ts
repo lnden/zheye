@@ -5,7 +5,7 @@ export function generateFitUrl (column: ColumnProps, width: number, height: numb
     column.avatar.fitUrl = column.avatar.url + `?x-oss-process=image/resize,${format},h_${height},w_${width}`
   } else {
     column.avatar = {
-      fitUrl: require('@/assets/column.webp')
+      fitUrl: require('@/assets/column.jpg')
     }
   }
 }
@@ -20,7 +20,7 @@ interface Result {
   error: ErrorType
 }
 
-export function beforeuploadCheck (file: File, condition: CheckCondition): Result {
+export function beforeUploadCheck (file: File, condition: CheckCondition): Result {
   const { format, size } = condition
   const isValidFormat = format ? format.includes(file.type) : true
   const isValidSize = size ? (file.size / 1024 / 1024 < size) : true

@@ -1,5 +1,5 @@
 <template>
-  <div class="create-post-page">
+  <div class="create-post-page w-75 mx-auto vh-100">
     <h4>新建文章</h4>
     <uploader
       action="/upload"
@@ -20,7 +20,6 @@
         <img :src="dataProps.uploadedData.data.url" width="500">
       </template>
     </uploader>
-    <input type="file" name="file" @change.prevent="handleFileChange"/>
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label clas="form-label">文章标题：</label>
@@ -53,12 +52,11 @@
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import Uploader from '@/components/Uploader.vue'
-import { beforeuploadCheck } from '../helper'
+import { beforeUploadCheck } from '../helper'
 import createMessage from '@/components/createMessage'
 
 export default defineComponent({
@@ -108,25 +106,8 @@ export default defineComponent({
       }
     }
 
-    const handleFileChange = (e:Event) => {
-      const target = e.target as HTMLInputElement
-      const files = target.files
-      if (files) {
-        const uploadFile = files[0]
-        const formData = new FormData()
-        formData.append(uploadFile.name, uploadFile)
-        axios.post('/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then((res) => {
-          console.log(res)
-        })
-      }
-    }
-
     const uploadCheck = (file: File) => {
-      const result = beforeuploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
+      const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
       const { passed, error } = result
       if (error === 'format') {
         createMessage('上传图片只能是 JPG/PNG 格式', 'error')
@@ -143,7 +124,6 @@ export default defineComponent({
       contentVal,
       contentRules,
       onFormSubmit,
-      handleFileChange,
       uploadCheck,
       handleFileUploaded
     }
