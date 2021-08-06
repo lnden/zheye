@@ -29,3 +29,14 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+  .post-list h4 a:hover {
+      color: #0d6efd;
+  }
+
+  .post-list h4 a {
+      text-decoration: none;
+      color: #1a1a1a;
+  }
+</style>

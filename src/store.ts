@@ -7,19 +7,21 @@ export interface ResponseType<T > {
   data: T
 }
 
+export interface ImageProps {
+  _id?: string
+  url?: string
+  createdAt?: string
+  fitUrl?: string
+}
+
 export interface UserProps {
   isLogin: boolean
   nickName?: string
   _id?: string
   column?: string
   email?: string
-}
-
-export interface ImageProps {
-  _id?: string
-  url?: string
-  createdAt?: string
-  fitUrl?: string
+  avatar?: ImageProps
+  description?: string
 }
 
 export interface ColumnProps {
@@ -45,12 +47,17 @@ export interface GlobalErrorProps {
   message?: string
 }
 
+interface ListProps<P> {
+  [id: string]: P;
+}
+
 export interface GlobalDataProps {
   error: GlobalErrorProps
   token: string
   loading: boolean
   columns: ColumnProps[]
   posts: PostProps[]
+  pppp: { data: ListProps<PostProps>; loadedColumns: string[] };
   user: UserProps
 }
 
@@ -81,6 +88,7 @@ const store = createStore<GlobalDataProps>({
     loading: false,
     columns: [],
     posts: [],
+    pppp: { data: {}, loadedColumns: [] },
     user: { isLogin: false }
   },
   mutations: {
@@ -123,6 +131,9 @@ const store = createStore<GlobalDataProps>({
       state.token = ''
       localStorage.removeItem('token')
       delete axios.defaults.headers.common.Authorization
+    },
+    fetchPost (state, rawData) {
+      state.pppp.data[rawData.data._id] = rawData.data
     }
   },
   actions: {
@@ -150,6 +161,14 @@ const store = createStore<GlobalDataProps>({
     },
     createPost ({ commit }, payload) {
       return postAndCommit('/posts', 'createPost', commit, payload)
+    },
+    fetchPost ({ state, commit }, id) {
+      const currentPost = state.pppp.data[id]
+      if (!currentPost || !currentPost.content) {
+        return getAndCommit(`/posts/${id}`, 'fetchPost', commit)
+      } else {
+        return Promise.resolve({ data: currentPost })
+      }
     }
   },
   getters: {
@@ -158,6 +177,9 @@ const store = createStore<GlobalDataProps>({
     },
     getPostsByCid: (state) => (cid: string) => {
       return state.posts.filter(post => post.column === cid)
+    },
+    getCurrentPost: (state) => (id: string) => {
+      return state.pppp.data[id]
     }
   }
 })
