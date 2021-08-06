@@ -77,7 +77,7 @@ export default defineComponent({
     const showEditArea = computed(() => {
       const { isLogin, _id } = store.state.user
       if (currentPost.value && currentPost.value.author && isLogin) {
-        const postAuthor = currentPost.value.author as unknown as UserProps
+        const postAuthor = currentPost.value.author as UserProps
         return postAuthor._id === _id
       } else {
         return false

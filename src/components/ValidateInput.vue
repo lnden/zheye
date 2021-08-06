@@ -4,18 +4,14 @@
       v-if="tag !== 'textarea'"
       class="form-control"
       :class="{'is-invalid': inputRef.error}"
-      :value="inputRef.val"
-      @input="updateValue"
-      @blur="validateInput"
+      v-model="inputRef.val"
       v-bind="$attrs"
     />
     <textarea
       v-else
       class="form-control"
       :class="{'is-invalid': inputRef.error}"
-      :value="inputRef.val"
-      @input="updateValue"
-      @blur="validateInput"
+      v-model="inputRef.val"
       v-bind="$attrs"
     >
     </textarea>
@@ -24,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, PropType, onMounted } from 'vue'
+import { defineComponent, reactive, PropType, onMounted, computed } from 'vue'
 import { emitter } from './ValidateForm.vue'
 
 interface RuleProp {
@@ -49,15 +45,15 @@ export default defineComponent({
   inheritAttrs: false,
   setup (props, context) {
     const inputRef = reactive({
-      val: props.modelValue || '',
+      val: computed({
+        get: () => props.modelValue || '',
+        set: val => {
+          context.emit('update:modelValue', val)
+        }
+      }),
       error: false,
       message: ''
     })
-    const updateValue = (e: KeyboardEvent) => {
-      const targetValue = (e.target as HTMLInputElement).value
-      inputRef.val = targetValue
-      context.emit('update:modelValue', targetValue)
-    }
 
     const validateInput = () => {
       if (props.rules) {
@@ -92,8 +88,7 @@ export default defineComponent({
 
     return {
       inputRef,
-      validateInput,
-      updateValue
+      validateInput
     }
   }
 })

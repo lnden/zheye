@@ -6,6 +6,7 @@
       class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4"
       :beforeUpload="uploadCheck"
       @file-uploaded="handleFileUploaded"
+      :uploaded="uploadedData"
     >
       <h2>点击上传头图</h2>
       <template #loading>
@@ -49,9 +50,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
@@ -69,8 +70,11 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
+    const route = useRoute()
+    const isEditMode = !!route.query.id
     let imageId = ''
     const titleVal = ref('')
+    const uploadedData = ref()
     const titleRules: RulesProp = [
       { type: 'required', message: '文章标题不能为空' }
     ]
@@ -78,6 +82,18 @@ export default defineComponent({
     const contentRules:RulesProp = [
       { type: 'required', message: '文章详情不能为空' }
     ]
+    onMounted(() => {
+      if (isEditMode) {
+        store.dispatch('fetchPost', route.query.id).then((rawData: ResponseType<PostProps>) => {
+          const currentPost = rawData.data
+          if (currentPost.image) {
+            uploadedData.value = { data: currentPost.image }
+          }
+          titleVal.value = currentPost.title
+          contentVal.value = currentPost.content || ''
+        })
+      }
+    })
     const handleFileUploaded = (rawData: ResponseType<ImageProps>) => {
       if (rawData.data._id) {
         imageId = rawData.data._id
@@ -118,6 +134,7 @@ export default defineComponent({
       return passed
     }
 
+    console.log(titleVal, 111)
     return {
       titleVal,
       titleRules,
@@ -125,7 +142,8 @@ export default defineComponent({
       contentRules,
       onFormSubmit,
       uploadCheck,
-      handleFileUploaded
+      handleFileUploaded,
+      uploadedData
     }
   }
 })

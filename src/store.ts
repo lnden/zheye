@@ -39,7 +39,7 @@ export interface PostProps {
   image?: ImageProps | string
   column: string
   createdAt?: string
-  author?: string
+  author?: string | UserProps
 }
 
 export interface GlobalErrorProps {
