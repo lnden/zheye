@@ -56,11 +56,8 @@ export interface GlobalDataProps {
   error: GlobalErrorProps
   token: string
   loading: boolean
-  // columns: ColumnProps[]
-  columns: ListProps<ColumnProps>
-  // posts: PostProps[]
-  posts: ListProps<PostProps>
-  pppp: { data: ListProps<PostProps>; loadedColumns: string[] };
+  columns: { data: ListProps<ColumnProps>, isLoaded: boolean }
+  posts: { data: ListProps<PostProps>; loadedColumns: string[] };
   user: UserProps
 }
 
@@ -80,9 +77,20 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
     return Promise.reject(new Error('network issue'))
   }
 }
-const asyncAndCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }) => {
+const asyncAndCommit = async (
+  url: string,
+  mutationName: string,
+  commit: Commit,
+  config: AxiosRequestConfig = { method: 'get' },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extraData?: any
+) => {
   const { data } = await axios(url, config)
-  commit(mutationName, data)
+  if (extraData) {
+    commit(mutationName, { data, extraData })
+  } else {
+    commit(mutationName, data)
+  }
   return data
 }
 
@@ -94,9 +102,8 @@ const store = createStore<GlobalDataProps>({
     },
     token: localStorage.getItem('token') || '',
     loading: false,
-    columns: {},
-    posts: {},
-    pppp: { data: {}, loadedColumns: [] },
+    columns: { data: {}, isLoaded: false },
+    posts: { data: {}, loadedColumns: [] },
     user: { isLogin: false }
   },
   mutations: {
@@ -104,34 +111,27 @@ const store = createStore<GlobalDataProps>({
     //   state.user = { ...state.user, isLogin: true, name: 'Tom' }
     // },
     createPost (state, newPost) {
-      // state.posts.push(newPost)
-      state.posts[newPost._id] = newPost
+      state.posts.data[newPost._id] = newPost
     },
     fetchColumns (state, rawData) {
-      // state.columns = rawData.data.list
-      state.columns = arrToObj(rawData.data.list)
+      state.columns.data = arrToObj(rawData.data.list)
+      state.columns.isLoaded = true
     },
     fetchColumn (state, rawData) {
-      // state.columns = [rawData.data]
-      state.columns[rawData.data._id] = rawData.data
+      state.columns.data[rawData.data._id] = rawData.data
     },
-    fetchPosts (state, rawData) {
-      // state.posts = rawData.data.list
-      state.posts = arrToObj(rawData.data.list)
+    fetchPosts (state, { data: rawData, extraData: columnId }) {
+      state.posts.data = { ...state.posts.data, ...arrToObj(rawData.data.list) }
+      state.posts.loadedColumns.push(columnId)
+    },
+    fetchPost (state, rawData) {
+      state.posts.data[rawData.data._id] = rawData.data
     },
     updatePost (state, { data }) {
-      // state.posts = state.posts.map(post => {
-      //   if (post._id === data._id) {
-      //     return data
-      //   } else {
-      //     return post
-      //   }
-      // })
-      state.posts[data._id] = data
+      state.posts.data[data._id] = data
     },
     deletePost (state, { data }) {
-      // state.posts = state.posts.filter(post => post._id !== data._id)
-      delete state.posts[data._id]
+      delete state.posts.data[data._id]
     },
     setLoading (state, status) {
       state.loading = status
@@ -157,23 +157,28 @@ const store = createStore<GlobalDataProps>({
       state.token = ''
       localStorage.removeItem('token')
       delete axios.defaults.headers.common.Authorization
-    },
-    fetchPost (state, rawData) {
-      // state.pppp.data[rawData.data._id] = rawData.data
-      state.posts[rawData.data._id] = rawData.data
     }
   },
   actions: {
-    async fetchColumns (context) {
-      const { data } = await axios.get('/columns')
-      context.commit('fetchColumns', data)
-      return data
+    // 获取专栏列表
+    async fetchColumns ({ state, commit }) {
+      if (!state.columns.isLoaded) {
+        return asyncAndCommit('/columns', 'fetchColumns', commit)
+      }
+      // const { data } = await axios.get('/columns')
+      // context.commit('fetchColumns', data)
+      // return data
     },
-    fetchColumn ({ commit }, cid) {
-      return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
+    // 获取某个专栏信息
+    fetchColumn ({ state, commit }, cid) {
+      if (!state.columns.data[cid]) {
+        return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
+      }
     },
-    fetchPosts ({ commit }, cid) {
-      return getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+    fetchPosts ({ state, commit }, cid) {
+      if (!state.posts.loadedColumns.includes(cid)) {
+        return asyncAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit, { method: 'get' }, cid)
+      }
     },
     login ({ commit }, payload) {
       return postAndCommit('/user/login', 'login', commit, payload)
@@ -190,7 +195,7 @@ const store = createStore<GlobalDataProps>({
       return postAndCommit('/posts', 'createPost', commit, payload)
     },
     fetchPost ({ state, commit }, id) {
-      const currentPost = state.pppp.data[id]
+      const currentPost = state.posts.data[id]
       if (!currentPost || !currentPost.content) {
         return getAndCommit(`/posts/${id}`, 'fetchPost', commit)
       } else {
@@ -211,18 +216,18 @@ const store = createStore<GlobalDataProps>({
   },
   getters: {
     getColumns: (state) => {
-      return objToArr(state.columns)
+      return objToArr(state.columns.data)
     },
     getColumnById: (state) => (id: string) => {
       // return state.columns.find(c => c._id === id)
-      return state.columns[id]
+      return state.columns.data[id]
     },
     getPostsByCid: (state) => (cid: string) => {
       // return state.posts.filter(post => post.column === cid)
-      return objToArr(state.posts).filter(post => post.column === cid)
+      return objToArr(state.posts.data).filter(post => post.column === cid)
     },
     getCurrentPost: (state) => (id: string) => {
-      return state.posts[id]
+      return state.posts.data[id]
     }
   }
 })
