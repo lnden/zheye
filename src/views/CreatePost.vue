@@ -139,7 +139,6 @@ export default defineComponent({
       return passed
     }
 
-    console.log(titleVal, 111)
     return {
       titleVal,
       titleRules,

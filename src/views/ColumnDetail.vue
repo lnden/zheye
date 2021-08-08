@@ -34,7 +34,6 @@ export default defineComponent({
     })
     const column = computed(() => {
       const selectColumn = store.getters.getColumnById(currentId) as ColumnProps | undefined
-      console.log(selectColumn, 22222)
       if (selectColumn) {
         generateFitUrl(selectColumn, 100, 100)
       }
@@ -42,7 +41,6 @@ export default defineComponent({
     })
     const list = computed(() => store.getters.getPostsByCid(currentId))
 
-    console.log(column)
     return {
       column,
       list

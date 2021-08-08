@@ -1,5 +1,6 @@
 import { createStore, Commit } from 'vuex'
 import axios, { AxiosRequestConfig } from 'axios'
+import { arrToObj, objToArr } from '@/helper'
 
 export interface ResponseType<T > {
   code: number
@@ -55,8 +56,10 @@ export interface GlobalDataProps {
   error: GlobalErrorProps
   token: string
   loading: boolean
-  columns: ColumnProps[]
-  posts: PostProps[]
+  // columns: ColumnProps[]
+  columns: ListProps<ColumnProps>
+  // posts: PostProps[]
+  posts: ListProps<PostProps>
   pppp: { data: ListProps<PostProps>; loadedColumns: string[] };
   user: UserProps
 }
@@ -91,8 +94,8 @@ const store = createStore<GlobalDataProps>({
     },
     token: localStorage.getItem('token') || '',
     loading: false,
-    columns: [],
-    posts: [],
+    columns: {},
+    posts: {},
     pppp: { data: {}, loadedColumns: [] },
     user: { isLogin: false }
   },
@@ -101,28 +104,34 @@ const store = createStore<GlobalDataProps>({
     //   state.user = { ...state.user, isLogin: true, name: 'Tom' }
     // },
     createPost (state, newPost) {
-      state.posts.push(newPost)
+      // state.posts.push(newPost)
+      state.posts[newPost._id] = newPost
     },
     fetchColumns (state, rawData) {
-      state.columns = rawData.data.list
+      // state.columns = rawData.data.list
+      state.columns = arrToObj(rawData.data.list)
     },
     fetchColumn (state, rawData) {
-      state.columns = [rawData.data]
+      // state.columns = [rawData.data]
+      state.columns[rawData.data._id] = rawData.data
     },
     fetchPosts (state, rawData) {
-      state.posts = rawData.data.list
+      // state.posts = rawData.data.list
+      state.posts = arrToObj(rawData.data.list)
     },
     updatePost (state, { data }) {
-      state.posts = state.posts.map(post => {
-        if (post._id === data._id) {
-          return data
-        } else {
-          return post
-        }
-      })
+      // state.posts = state.posts.map(post => {
+      //   if (post._id === data._id) {
+      //     return data
+      //   } else {
+      //     return post
+      //   }
+      // })
+      state.posts[data._id] = data
     },
     deletePost (state, { data }) {
-      state.posts = state.posts.filter(post => post._id !== data._id)
+      // state.posts = state.posts.filter(post => post._id !== data._id)
+      delete state.posts[data._id]
     },
     setLoading (state, status) {
       state.loading = status
@@ -150,7 +159,8 @@ const store = createStore<GlobalDataProps>({
       delete axios.defaults.headers.common.Authorization
     },
     fetchPost (state, rawData) {
-      state.pppp.data[rawData.data._id] = rawData.data
+      // state.pppp.data[rawData.data._id] = rawData.data
+      state.posts[rawData.data._id] = rawData.data
     }
   },
   actions: {
@@ -200,14 +210,19 @@ const store = createStore<GlobalDataProps>({
     }
   },
   getters: {
+    getColumns: (state) => {
+      return objToArr(state.columns)
+    },
     getColumnById: (state) => (id: string) => {
-      return state.columns.find(c => c._id === id)
+      // return state.columns.find(c => c._id === id)
+      return state.columns[id]
     },
     getPostsByCid: (state) => (cid: string) => {
-      return state.posts.filter(post => post.column === cid)
+      // return state.posts.filter(post => post.column === cid)
+      return objToArr(state.posts).filter(post => post.column === cid)
     },
     getCurrentPost: (state) => (id: string) => {
-      return state.pppp.data[id]
+      return state.posts[id]
     }
   }
 })
