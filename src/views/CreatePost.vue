@@ -155,7 +155,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .create-post-page >>> .file-upload-container{
+  .create-post-page :deep(.file-upload-container){
     height: 200px;
     cursor: pointer;
   }

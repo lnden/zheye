@@ -11,8 +11,9 @@
     <ul v-else class="list-inline mb-0">
       <dropdown :title="`你好 ${user.nickName}`">
         <dropdown-item><router-link to="/create" class="dropdown-item">新建文章</router-link></dropdown-item>
-        <dropdown-item disabled><router-link to="/editor" class="dropdown-item">编辑资料</router-link></dropdown-item>
-        <dropdown-item><a href="#" class="dropdown-item">退出登录</a></dropdown-item>
+        <dropdown-item><router-link :to="`/column/${user.column}`" class="dropdown-item">我的专栏</router-link></dropdown-item>
+        <dropdown-item disabled><a class="dropdown-item">编辑资料</a></dropdown-item>
+        <dropdown-item><a href="#" class="dropdown-item" @click="handleLogout">退出登录</a></dropdown-item>
       </dropdown>
     </ul>
   </nav>
@@ -21,9 +22,11 @@
 <script lang="ts">
 
 import { defineComponent, PropType } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { UserProps } from '@/store'
 import Dropdown from './Dropdown.vue'
 import DropdownItem from './DropdownItem.vue'
-import { UserProps } from '@/store'
 
 export default defineComponent({
   name: 'global-header',
@@ -36,6 +39,19 @@ export default defineComponent({
   components: {
     Dropdown,
     DropdownItem
+  },
+  setup () {
+    const store = useStore()
+    const router = useRouter()
+
+    const handleLogout = () => {
+      store.commit('logout')
+      router.push('/')
+    }
+
+    return {
+      handleLogout
+    }
   }
 })
 </script>

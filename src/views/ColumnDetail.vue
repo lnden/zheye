@@ -1,5 +1,5 @@
 <template>
-  <div class="column-detail-page w-75 mx-auto vh-100">
+  <div class="column-detail-page w-75 mx-auto h-100">
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center">
       <div class="col-2 text-center">
         <img :src="column.avatar && column.avatar.fitUrl" :alt="column.title" class="rounded-circle w-80">
@@ -39,6 +39,8 @@ export default defineComponent({
       }
       return selectColumn
     })
+
+    console.log(store.getters.getColumnById(currentId))
     const list = computed(() => store.getters.getPostsByCid(currentId))
 
     return {
