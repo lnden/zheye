@@ -6,7 +6,7 @@
     </ul>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item"><router-link to="/login" class="btn btn-outline-light my-2">登录</router-link></li>
-      <li class="list-inline-item"><router-link to="/register" class="btn btn-outline-light my-2">注册</router-link></li>
+      <li class="list-inline-item"><router-link to="/signup" class="btn btn-outline-light my-2">注册</router-link></li>
     </ul>
     <ul v-else class="list-inline mb-0">
       <dropdown :title="`你好 ${user.nickName}`">
@@ -24,7 +24,7 @@
 import { defineComponent, PropType } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { UserProps } from '@/store'
+import { UserProps } from '@/store/index'
 import Dropdown from './Dropdown.vue'
 import DropdownItem from './DropdownItem.vue'
 

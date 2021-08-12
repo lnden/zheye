@@ -1,9 +1,7 @@
-import { ColumnProps } from './store'
+import { ColumnProps } from '@/store'
 
-export function generateFitUrl (column: ColumnProps, width: number, height: number, format = ['m_pad']): void {
-  if (column.avatar) {
-    column.avatar.fitUrl = column.avatar.url + `?x-oss-process=image/resize,${format},h_${height},w_${width}`
-  } else {
+export function generateFitUrl (column: ColumnProps): void {
+  if (!column.avatar) {
     column.avatar = {
       fitUrl: require('@/assets/column.jpg')
     }

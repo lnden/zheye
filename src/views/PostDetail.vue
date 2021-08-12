@@ -39,8 +39,8 @@ import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { GlobalDataProps, PostProps, ImageProps, UserProps, ResponseType } from '@/store'
 import UserProfile from '@/components/UserProfile.vue'
-import Modal from '../components/Modal.vue'
-import createMessage from '@/components/createMessage'
+import Modal from '@/components/Modal.vue'
+import createMessage from '@/utils/createMessage'
 
 export default defineComponent({
   name: 'post-detail',

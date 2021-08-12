@@ -17,7 +17,8 @@
 <script lang="ts">
 
 import { defineComponent, PropType, computed } from 'vue'
-import { ColumnProps } from '../store'
+import { ColumnProps } from '@/store'
+import { generateFitUrl } from '@/utils/helper'
 
 export default defineComponent({
   name: 'column-list',
@@ -30,13 +31,7 @@ export default defineComponent({
   setup (props) {
     const columnList = computed(() => {
       return props.list.map(column => {
-        if (!column.avatar) {
-          column.avatar = {
-            url: require('@/assets/column.jpg')
-          }
-        } else {
-          column.avatar.url = column.avatar.url + '?x-oss-process=image/resize,m-pad,h_50,w_50'
-        }
+        generateFitUrl(column)
         return column
       })
     })

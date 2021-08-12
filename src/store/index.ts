@@ -1,6 +1,6 @@
 import { createStore, Commit } from 'vuex'
 import axios, { AxiosRequestConfig } from 'axios'
-import { arrToObj, objToArr } from '@/helper'
+import { arrToObj, objToArr } from '@/utils/helper'
 
 export interface ResponseType<T > {
   code: number

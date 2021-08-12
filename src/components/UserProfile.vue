@@ -12,7 +12,7 @@
 
 <script lang='ts'>
 import { defineComponent, computed, PropType } from 'vue'
-import { UserProps } from '../store'
+import { UserProps } from '@/store'
 
 export default defineComponent({
   name: 'user-profile',
@@ -35,4 +35,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+.user-profile-component img {
+    width: 50px;
+    height: 50px;
+}
 </style>

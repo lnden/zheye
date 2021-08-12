@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import axios from 'axios'
-import store from '@/store'
+import store from '@/store/index'
 import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import ColumnDetail from '@/views/ColumnDetail.vue'
 import CreatePost from '@/views/CreatePost.vue'
-import Register from '@/views/Register.vue'
+import Signup from '@/views/Signup.vue'
 import PostDetail from '@/views/PostDetail.vue'
 import Upload from '@/views/Upload.vue'
 
@@ -40,9 +40,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/register',
-      name: 'register',
-      component: Register
+      path: '/signup',
+      name: 'signup',
+      component: Signup
     },
     {
       path: '/posts/:id',

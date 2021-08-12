@@ -57,8 +57,8 @@ import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import Uploader from '@/components/Uploader.vue'
-import { beforeUploadCheck } from '../helper'
-import createMessage from '@/components/createMessage'
+import { beforeUploadCheck } from '@/utils/helper'
+import createMessage from '@/utils/createMessage'
 
 export default defineComponent({
   name: 'create-post',

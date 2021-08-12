@@ -2,7 +2,6 @@
   <div class="container">
     <global-header :user="currentUser" />
     <loader v-if="isLoading" text="拼命加载中" background="rgba(0,0,0,.8)"/>
-    <!-- <message type="error" :message="error.message" v-if="error.status" @close-message="handleClose"/> -->
     <router-view></router-view>
     <global-footer />
   </div>
@@ -11,13 +10,11 @@
 <script lang="ts">
 import { defineComponent, computed, watch } from 'vue'
 import { useStore } from 'vuex'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import GlobalHeader from './components/GlobalHeader.vue'
-import GlobalFooter from './components/GlobalFooter.vue'
-import Loader from './components/Loader.vue'
-// import Message from './components/Message.vue'
+import GlobalHeader from '@/components/GlobalHeader.vue'
+import GlobalFooter from '@/components/GlobalFooter.vue'
+import Loader from '@/components/Loader.vue'
 import { GlobalDataProps } from '@/store'
-import createMessag from './components/createMessage'
+import createMessag from '@/utils/createMessage'
 
 export default defineComponent({
   name: 'App',
@@ -25,7 +22,6 @@ export default defineComponent({
     GlobalHeader,
     GlobalFooter,
     Loader
-    // Message
   },
   setup () {
     const store = useStore<GlobalDataProps>()

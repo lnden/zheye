@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import useDOMCreate from '../hooks/useDOMCreate'
+import useDOMCreate from '@/hooks/useDOMCreate'
 
 export default defineComponent({
   name: 'loader',

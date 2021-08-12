@@ -24,7 +24,7 @@ import { defineComponent } from 'vue'
 import axios from 'axios'
 import { ResponseType, ImageProps } from '@/store'
 import Uploader from '@/components/Uploader.vue'
-import createMessage from '@/components/createMessage'
+import createMessage from '@/utils/createMessage'
 
 export default defineComponent({
   name: 'upload',
