@@ -7,7 +7,7 @@ import ColumnDetail from '@/views/ColumnDetail.vue'
 import CreatePost from '@/views/CreatePost.vue'
 import Signup from '@/views/Signup.vue'
 import PostDetail from '@/views/PostDetail.vue'
-import Upload from '@/views/Upload.vue'
+import Component from '@/views/Component.vue'
 
 const routerHistory = createWebHistory()
 const router = createRouter({
@@ -50,9 +50,9 @@ const router = createRouter({
       component: PostDetail
     },
     {
-      path: '/upload',
-      name: 'upload',
-      component: Upload
+      path: '/component',
+      name: 'component',
+      component: Component
     }
   ]
 })

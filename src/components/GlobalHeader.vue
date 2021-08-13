@@ -2,7 +2,6 @@
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
     <ul  class="list-inline mb-0">
       <router-link class="navbar-brand" to="/">者也专栏</router-link>
-      <router-link class="navbar-brand" to="/upload">上传组件</router-link>
     </ul>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item"><router-link to="/login" class="btn btn-outline-light my-2">登录</router-link></li>
@@ -12,6 +11,7 @@
       <dropdown :title="`你好 ${user.nickName}`">
         <dropdown-item><router-link to="/create" class="dropdown-item">新建文章</router-link></dropdown-item>
         <dropdown-item><router-link :to="`/column/${user.column}`" class="dropdown-item">我的专栏</router-link></dropdown-item>
+        <dropdown-item><router-link to="/component" class="dropdown-item">组件库</router-link></dropdown-item>
         <dropdown-item disabled><a class="dropdown-item">编辑资料</a></dropdown-item>
         <dropdown-item><a href="#" class="dropdown-item" @click="handleLogout">退出登录</a></dropdown-item>
       </dropdown>

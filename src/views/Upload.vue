@@ -1,11 +1,11 @@
 <template>
-  <div class="upload-wrap  vh-100">
+  <div class="upload-wrap">
     <uploader
       action="/upload"
       :beforeUpload="beforeUpload"
       @file-uploaded="onFileUploaded"
     >
-      <h3 style="cursor: pointer">点击上传</h3>
+      <button class="btn btn-primary" style="cursor: pointer">点击上传</button>
       <template #loading>
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Loading ... </span>
@@ -15,7 +15,8 @@
         <img :src="dataProps.uploadedData.data.url" width="500">
       </template>
     </uploader>
-    <input type="file" name="file" @change.prevent="handleFileChange"/>
+    <hr>
+    <input  class="btn btn-primary"  type="file" name="file" @change.prevent="handleFileChange"/>
   </div>
 </template>
 
